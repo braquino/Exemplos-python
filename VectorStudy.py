@@ -33,7 +33,7 @@ class Vector:
     def normalization(self):
         try:
             return self * (1/self.length())
-        except ZeroDivisionError:
+        except:
             print("Cannot normalize a zero lenght vector")
         
     def dot_product(self, vector):
@@ -46,31 +46,55 @@ class Vector:
     def angle_rad(self, vector):
         try:     
             return math.acos(self.dot_product(vector)/(self.length()*vector.length()))
-        except ZeroDivisionError:
+        except:
             print("There is no existent angle")
+            
+    def __eq__(self, other):
+        try:
+            return round(abs(self.x),5) == round(abs(other.x),5) and\
+                round(abs(self.x),5) == round(abs(other.x),5) and\
+                round(abs(self.x),5) == round(abs(other.x),5)
+        except:
+            print("Can´t compare distincts objects")
+            
+    def paralel(self, other):
+        return self.normalization() == other.normalization()
+            
+    def projection(self, b):
+        return b.normalization() * self.dot_product(b.normalization())
+    
+    def ort_to_base(self, other):
+        return self - self.projection(other)
+    
+    def cross_product(self, other):
+        x = self.y * other.z - other.y * self.z
+        y = -(self.x * other.z - other.x * self.z)
+        z = self.x * other.y - other.x * self.y
+        return Vector(x, y, z)
+    
+    def orthogonal(self, other, tolerance=1e-10):
+        return abs(self.dot_product(other)) < tolerance
+    
+    def paralelogram_area(self, other):
+        return self.cross_product(other).length()
+    
+    def triangle_area(self, other):
+        return self.paralelogram_area(other) / 2.0
+    
+
+a = Vector(8.462, 7.893, -8.187)
+b = Vector(6.984, -5.975, 4.778)
+
+print(a.cross_product(b))
+
+a = Vector(-8.987, -9.838, 5.031)
+b = Vector(-4.268, -1.861, -8.866)
+
+print(round(a.paralelogram_area(b),3))
+
+a = Vector(1.5, 9.547, 3.691)
+b = Vector(-6.007, 0.124, 5.772)
+
+print(round(a.triangle_area(b),3))
 
 
-vec_1a = Vector(7.887, 4.138)
-vec_1b = Vector(-8.802, 6.776)
-
-print(round(vec_1a.dot_product(vec_1b),3))
-
-vec_2a = Vector(-5.955, -4.904, -1.874)
-vec_2b = Vector(-4.496, -8.755, 7.103)
-
-print(round(vec_2a.dot_product(vec_2b),3))
-
-vec_3a = Vector(3.183, -7.627)
-vec_3b = Vector(-2.668, 5.319)
-
-print(round(vec_3a.angle_rad(vec_3b),3))
-
-vec_4a = Vector(7.35, 0.221, 5.188)
-vec_4b = Vector(2.751, 8.259, 3.985)
-
-print(round(vec_4a.angle(vec_4b),3))
-
-vec_ta = Vector(1, 2, -1)
-vec_tb = Vector(3, 1, 0)
-
-print(round(vec_ta.angle_rad(vec_tb),3))
